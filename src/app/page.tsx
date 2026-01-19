@@ -210,6 +210,8 @@ function CategorySection({ category }: { category: Category }) {
 }
 
 function Navigation() {
+  const [menuOpen, setMenuOpen] = useState(false)
+
   return (
     <nav className="sticky-nav fixed top-0 left-0 right-0 z-50">
       <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
@@ -222,6 +224,7 @@ function Navigation() {
         </a>
 
         <div className="flex items-center gap-1">
+          {/* Desktop links */}
           {categories.map((cat) => (
             <a
               key={cat.title}
@@ -231,7 +234,35 @@ function Navigation() {
               {cat.title}
             </a>
           ))}
-          <a href="#kontakt" className="nav-link text-sm">
+
+          {/* Mobile menu */}
+          <div className="relative sm:hidden">
+            <button
+              className="mobile-menu-btn"
+              onClick={() => setMenuOpen(!menuOpen)}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+              Menu
+            </button>
+            <div className={`mobile-dropdown ${menuOpen ? 'open' : ''}`}>
+              {categories.map((cat) => (
+                <a
+                  key={cat.title}
+                  href={`#${cat.title.toLowerCase().replace(/\s+&\s+/g, '-').replace(/\s+/g, '-')}`}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  {cat.title}
+                </a>
+              ))}
+              <a href="#kontakt" onClick={() => setMenuOpen(false)}>
+                Kontakt
+              </a>
+            </div>
+          </div>
+
+          <a href="#kontakt" className="nav-link text-sm hidden sm:block">
             Kontakt
           </a>
         </div>
