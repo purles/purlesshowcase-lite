@@ -140,49 +140,51 @@ function ProjectCard({ project }: { project: Project }) {
 
   return (
     <div
-      className={`card p-5 cursor-pointer ${isExpanded ? 'expanded' : ''}`}
+      className={`card cursor-pointer ${isExpanded ? 'expanded' : ''}`}
       onClick={handleClick}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-slate-100 mb-1">
-            {project.name}
-          </h3>
-          <p className="text-slate-400 text-sm">
-            {project.description}
-          </p>
+      <div className="card-inner">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-lg font-semibold text-slate-100 mb-1">
+              {project.name}
+            </h3>
+            <p className="text-slate-400 text-sm">
+              {project.description}
+            </p>
+          </div>
+
+          <svg
+            className={`w-5 h-5 text-slate-500 flex-shrink-0 chevron ${isExpanded ? 'rotated' : ''}`}
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
         </div>
 
-        <svg
-          className={`w-5 h-5 text-slate-500 flex-shrink-0 chevron ${isExpanded ? 'rotated' : ''}`}
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
+        <div className="mt-4">
+          <a
+            href={project.demoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary text-sm"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Otwórz
+          </a>
+        </div>
       </div>
 
       <div className={`expanded-content ${isExpanded ? 'open' : ''}`}>
         <p className="text-slate-400 text-sm">
           {project.longDescription}
         </p>
-      </div>
-
-      <div className="mt-4">
-        <a
-          href={project.demoUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-primary text-sm"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Otwórz
-        </a>
       </div>
     </div>
   )

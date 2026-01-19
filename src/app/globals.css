@@ -142,9 +142,9 @@ body {
 /* Expanded description - absolute overlay */
 .expanded-content {
   position: absolute;
-  left: -1.25rem;
-  right: -1.25rem;
-  top: calc(100% + 1.25rem);
+  left: -1px;
+  right: -1px;
+  top: 100%;
   background: rgba(30, 30, 42, 0.98);
   border: 1px solid rgba(139, 92, 246, 0.4);
   border-top: none;
@@ -163,6 +163,11 @@ body {
   transform: translateY(0);
   pointer-events: auto;
   padding: 1rem 1.25rem;
+}
+
+/* Card inner wrapper */
+.card-inner {
+  padding: 1.25rem;
 }
 
 /* Chevron */
