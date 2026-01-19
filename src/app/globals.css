@@ -42,6 +42,7 @@ body {
 .card.expanded {
   background: rgba(30, 30, 42, 0.95);
   border-color: rgba(139, 92, 246, 0.5);
+  border-radius: 12px 12px 0 0;
   transform: scale(1.02);
   box-shadow:
     0 0 0 1px rgba(139, 92, 246, 0.3),
@@ -141,17 +142,30 @@ body {
   background-clip: text;
 }
 
-/* Expand animation */
+/* Expanded description - absolute overlay */
 .expanded-content {
-  max-height: 0;
-  overflow: hidden;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: rgba(30, 30, 42, 0.98);
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  border-top: none;
+  border-radius: 0 0 12px 12px;
+  padding: 0;
   opacity: 0;
-  transition: all 0.3s ease;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: all 0.25s ease;
+  z-index: 20;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .expanded-content.open {
-  max-height: 200px;
   opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  padding: 1rem 1.25rem;
 }
 
 /* Chevron */

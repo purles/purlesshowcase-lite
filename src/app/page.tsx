@@ -164,7 +164,7 @@ function ProjectCard({ project }: { project: Project }) {
       </div>
 
       <div className={`expanded-content ${isExpanded ? 'open' : ''}`}>
-        <p className="text-slate-500 text-sm mt-3 pt-3 border-t border-slate-700/50">
+        <p className="text-slate-400 text-sm">
           {project.longDescription}
         </p>
       </div>
