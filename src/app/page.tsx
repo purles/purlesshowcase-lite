@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, createContext, useContext } from 'react'
 
 interface Project {
   name: string
@@ -13,6 +13,12 @@ interface Category {
   title: string
   projects: Project[]
 }
+
+// Context for tracking expanded card
+const ExpandedContext = createContext<{
+  expandedCard: string | null
+  setExpandedCard: (id: string | null) => void
+}>({ expandedCard: null, setExpandedCard: () => {} })
 
 const categories: Category[] = [
   {
@@ -122,16 +128,20 @@ const categories: Category[] = [
 ]
 
 function ProjectCard({ project }: { project: Project }) {
-  const [isExpanded, setIsExpanded] = useState(false)
+  const { expandedCard, setExpandedCard } = useContext(ExpandedContext)
+  const cardId = project.name
+  const isExpanded = expandedCard === cardId
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!(e.target as HTMLElement).closest('a')) {
+      setExpandedCard(isExpanded ? null : cardId)
+    }
+  }
 
   return (
     <div
-      className="card p-5 cursor-pointer"
-      onClick={(e) => {
-        if (!(e.target as HTMLElement).closest('a')) {
-          setIsExpanded(!isExpanded)
-        }
-      }}
+      className={`card p-5 cursor-pointer ${isExpanded ? 'expanded' : ''}`}
+      onClick={handleClick}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
@@ -179,7 +189,9 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 function CategorySection({ category }: { category: Category }) {
+  const { expandedCard } = useContext(ExpandedContext)
   const sectionId = category.title.toLowerCase().replace(/\s+&\s+/g, '-').replace(/\s+/g, '-')
+  const hasExpanded = category.projects.some(p => p.name === expandedCard)
 
   return (
     <section id={sectionId} className="mb-16">
@@ -188,7 +200,7 @@ function CategorySection({ category }: { category: Category }) {
         <span className="text-slate-100">{category.title}</span>
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className={`cards-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ${hasExpanded ? 'has-expanded' : ''}`}>
         {category.projects.map((project) => (
           <ProjectCard key={project.name} project={project} />
         ))}
@@ -225,6 +237,41 @@ function Navigation() {
         </div>
       </div>
     </nav>
+  )
+}
+
+function FloatingCTA() {
+  const [isVisible, setIsVisible] = useState(true)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const footer = document.getElementById('kontakt')
+      if (!footer) return
+
+      const footerRect = footer.getBoundingClientRect()
+      const isFooterVisible = footerRect.top < window.innerHeight
+      setIsVisible(!isFooterVisible)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    handleScroll()
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const scrollToContact = () => {
+    document.getElementById('kontakt')?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  return (
+    <button
+      onClick={scrollToContact}
+      className={`float-cta ${!isVisible ? 'hidden' : ''}`}
+    >
+      <svg className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      </svg>
+      <span>Masz pomysł?</span>
+    </button>
   )
 }
 
@@ -272,28 +319,33 @@ function Footer() {
 }
 
 export default function Home() {
+  const [expandedCard, setExpandedCard] = useState<string | null>(null)
+
   return (
-    <div className="bg-gradient min-h-screen">
-      <Navigation />
+    <ExpandedContext.Provider value={{ expandedCard, setExpandedCard }}>
+      <div className="bg-gradient min-h-screen">
+        <Navigation />
+        <FloatingCTA />
 
-      <main className="max-w-6xl mx-auto px-6 pt-24 pb-12">
-        {/* Hero */}
-        <header className="text-center mb-16">
-          <h1 className="hero-title text-4xl md:text-5xl font-bold mb-4">
-            Purlés Tools
-          </h1>
-          <p className="text-slate-400 text-lg max-w-xl mx-auto">
-            Biblioteka narzędzi automatyzacji i produktywności
-          </p>
-        </header>
+        <main className="max-w-6xl mx-auto px-6 pt-24 pb-12">
+          {/* Hero */}
+          <header className="text-center mb-16">
+            <h1 className="hero-title text-4xl md:text-5xl font-bold mb-4">
+              Purlés Tools
+            </h1>
+            <p className="text-slate-400 text-lg max-w-xl mx-auto">
+              Biblioteka narzędzi automatyzacji i produktywności
+            </p>
+          </header>
 
-        {/* Categories */}
-        {categories.map((category) => (
-          <CategorySection key={category.title} category={category} />
-        ))}
+          {/* Categories */}
+          {categories.map((category) => (
+            <CategorySection key={category.title} category={category} />
+          ))}
 
-        <Footer />
-      </main>
-    </div>
+          <Footer />
+        </main>
+      </div>
+    </ExpandedContext.Provider>
   )
 }
